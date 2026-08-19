@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MediaVault • Instagram & TikTok Downloader Studio</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+  <div class="ambient-glow glow-3"></div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- App Wrapper -->
+  <div class="app-container">
+    
+    <!-- Header -->
+    <header class="app-header glass-card">
+      <div class="logo-area">
+        <div class="logo-icon">
+          <i data-lucide="cloud-download"></i>
+        </div>
+        <div class="logo-text">
+          <h1>Media<span>Vault</span></h1>
+          <p class="subtitle">Instagram & TikTok Downloader Studio</p>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="nav-tabs" role="tablist">
+        <button class="nav-btn active" data-tab="instagram" id="tab-btn-instagram">
+          <i data-lucide="instagram"></i>
+          <span>Instagram</span>
+        </button>
+        <button class="nav-btn" data-tab="tiktok" id="tab-btn-tiktok">
+          <i data-lucide="video"></i>
+          <span>TikTok</span>
+        </button>
+        <button class="nav-btn" data-tab="batch" id="tab-btn-batch">
+          <i data-lucide="layers"></i>
+          <span>Batch Hub</span>
+          <span class="badge" id="batch-active-badge" style="display:none;">0</span>
+        </button>
+        <button class="nav-btn" data-tab="direct" id="tab-btn-direct">
+          <i data-lucide="link-2"></i>
+          <span>Direct Links</span>
+        </button>
+        <button class="nav-btn" data-tab="gallery" id="tab-btn-gallery">
+          <i data-lucide="layout-grid"></i>
+          <span>Gallery</span>
+          <span class="badge" id="gallery-total-badge">0</span>
+        </button>
+        <button class="nav-btn" data-tab="session" id="tab-btn-session">
+          <i data-lucide="key-round"></i>
+          <span>Session & Cookies</span>
+          <span class="status-dot" id="session-status-dot" title="Session Status"></span>
+        </button>
+      </nav>
+
+      <!-- Header Actions & Storage Widget -->
+      <div class="header-actions">
+        <div class="storage-pill" id="header-storage-pill" title="MediaVault Storage Usage">
+          <i data-lucide="hard-drive"></i>
+          <span id="header-storage-text">0 MB</span>
+        </div>
+        <button class="btn btn-secondary btn-icon-text" id="btn-open-finder" title="Open downloads in macOS Finder">
+          <i data-lucide="folder-open"></i>
+          <span>Finder</span>
+        </button>
+        <button class="btn btn-icon" id="btn-toggle-log-drawer" title="Toggle Live Console & Interactive Terminal">
+          <i data-lucide="terminal"></i>
+          <span class="active-job-indicator hidden" id="header-active-job-dot"></span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+
+      <!-- ==================== INSTAGRAM TAB ==================== -->
+      <section class="tab-panel active" id="panel-instagram">
+        <div class="panel-layout">
+          
+          <!-- Input Card -->
+          <div class="glass-card main-form-card">
+            <div class="card-header">
+              <div class="card-title">
+                <i data-lucide="instagram" class="platform-icon ig-gradient"></i>
+                <div>
+                  <h2>Download Instagram Profiles</h2>
+                  <p>Download photos, reels, carousels, stories, highlights & tagged media in full resolution.</p>
+                </div>
+              </div>
+              <div class="session-tag" id="ig-session-tag">
+                <i data-lucide="shield-check"></i>
+                <span id="ig-session-tag-text">Public Mode</span>
+              </div>
+            </div>
+
+            <!-- Quick Presets -->
+            <div class="preset-bar">
+              <span class="preset-label"><i data-lucide="zap"></i> Presets:</span>
+              <button type="button" class="btn btn-preset" data-preset="ig-top20">Top 20 Posts</button>
+              <button type="button" class="btn btn-preset" data-preset="ig-reels">Reels Only</button>
+              <button type="button" class="btn btn-preset" data-preset="ig-stories">Stories & Highlights</button>
+              <button type="button" class="btn btn-preset" data-preset="ig-full">Full Archive</button>
+            </div>
+
+            <form id="form-instagram" class="download-form">
+              <!-- Username input row (Supports multiple usernames separated by comma or space) -->
+              <div class="form-group input-with-action">
+                <label for="ig-username">Instagram Username(s) or Profile URL(s)</label>
+                <div class="input-wrapper">
+                  <span class="input-prefix">@</span>
+                  <input type="text" id="ig-username" placeholder="e.g. zuck, leomessi, natgeo (single or comma-separated)" autocomplete="off" required />
+                  <button type="button" class="btn btn-ghost" id="btn-inspect-ig" title="Inspect & Preview profile">
+                    <i data-lucide="search"></i>
+                    <span>Inspect</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Profile Preview Card (Hidden by default until inspected) -->
+              <div class="profile-preview-card hidden" id="ig-profile-preview">
+                <img src="" alt="Avatar" class="profile-avatar" id="ig-preview-avatar" referrerpolicy="no-referrer" />
+                <div class="profile-details">
+                  <div class="profile-name-row">
+                    <h3 id="ig-preview-name">Username</h3>
+                    <span class="verified-badge hidden" id="ig-preview-verified"><i data-lucide="check-circle-2"></i></span>
+                    <span class="badge badge-private hidden" id="ig-preview-private"><i data-lucide="lock"></i> Private</span>
+                  </div>
+                  <p class="profile-bio" id="ig-preview-bio">Bio description will appear here...</p>
+                  <div class="profile-stats">
+                    <div class="stat-item"><strong id="ig-preview-posts">0</strong> <span>Posts</span></div>
+                    <div class="stat-item"><strong id="ig-preview-followers">0</strong> <span>Followers</span></div>
+                    <div class="stat-item"><strong id="ig-preview-following">0</strong> <span>Following</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Media Targets Checkboxes -->
+              <div class="form-section">
+                <label class="section-label">Media to Download</label>
+                <div class="checkbox-grid">
+                  <label class="custom-checkbox">
+                    <input type="checkbox" id="ig-target-posts" checked />
+                    <span class="checkbox-box"><i data-lucide="check"></i></span>
+                    <span class="checkbox-content">
+                      <strong>Posts & Carousels</strong>
+                      <small>All grid photos & multi-item carousels</small>
+                    </span>
+                  </label>
+                  <label class="custom-checkbox">
+                    <input type="checkbox" id="ig-target-reels" checked />
+                    <span class="checkbox-box"><i data-lucide="check"></i></span>
+                    <span class="checkbox-content">
+                      <strong>Reels & Videos</strong>
+                      <small>High quality full-length video reels</small>
+                    </span>
+                  </label>
+                  <label class="custom-checkbox">
+                    <input type="checkbox" id="ig-target-stories" />
+                    <span class="checkbox-box"><i data-lucide="check"></i></span>
+                    <span class="checkbox-content">
+                      <strong>Stories (Active 24h)</strong>
+                      <small>Requires session cookie in Settings</small>
+                    </span>
+                  </label>
+                  <label class="custom-checkbox">
+                    <input type="checkbox" id="ig-target-highlights" />
+                    <span class="checkbox-box"><i data-lucide="check"></i></span>
+                    <span class="checkbox-content">
+                      <strong>Story Highlights</strong>
+                      <small>Organized into highlight folders</small>
+                    </span>
+                  </label>
+                  <label class="custom-checkbox">
+                    <input type="checkbox" id="ig-target-tagged" />
+                    <span class="checkbox-box"><i data-lucide="check"></i></span>
+                    <span class="checkbox-content">
+                      <strong>Tagged Posts</strong>
+                      <small>Posts where the user is tagged</small>
+                    </span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Filters & Scope -->
+              <div class="form-section">
+                <label class="section-label">Filters & Options</label>
+                <div class="form-grid-3">
+                  <div class="form-group">
+                    <label for="ig-limit">Download Limit per User</label>
+                    <select id="ig-limit" class="custom-select">
+                      <option value="20">Latest 20 Posts</option>
+                      <option value="50" selected>Latest 50 Posts</option>
+                      <option value="100">Latest 100 Posts</option>
+                      <option value="250">Latest 250 Posts</option>
+                      <option value="all">Unlimited (All Posts)</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="ig-media-type">Media Type</label>
+                    <select id="ig-media-type" class="custom-select">
+                      <option value="all" selected>All (Photos & Videos)</option>
+                      <option value="photos">Photos Only</option>
+                      <option value="videos">Videos Only</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="ig-custom-folder">Custom Subfolder (Optional)</label>
+                    <input type="text" id="ig-custom-folder" placeholder="Default: username" class="custom-input" />
+                  </div>
+                </div>
+
+                <div class="form-grid-2" style="margin-top: 12px;">
+                  <div class="form-group">
+                    <label for="ig-date-from">Posts Newer Than (Optional)</label>
+                    <input type="date" id="ig-date-from" class="custom-input" />
+                  </div>
+                  <div class="form-group">
+                    <label for="ig-date-to">Posts Older Than (Optional)</label>
+                    <input type="date" id="ig-date-to" class="custom-input" />
+                  </div>
+                </div>
+
+                <div class="checkbox-row" style="margin-top: 14px;">
+                  <label class="switch-control">
+                    <input type="checkbox" id="ig-save-captions" checked />
+                    <span class="switch-slider"></span>
+                    <span class="switch-label">Save Post Captions (.txt)</span>
+                  </label>
+                  <label class="switch-control">
+                    <input type="checkbox" id="ig-save-meta" checked />
+                    <span class="switch-slider"></span>
+                    <span class="switch-label">Save Metadata JSON</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Submit Button -->
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary btn-ig-gradient btn-large" id="btn-start-ig">
+                  <i data-lucide="download-cloud"></i>
+                  <span>Start Instagram Download</span>
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Quick Tip Card -->
+          <div class="glass-card side-info-card">
+            <h3><i data-lucide="sparkles"></i> Instagram Pro Tips</h3>
+            <ul class="info-list">
+              <li>
+                <strong>Multi-Account Support:</strong> You can enter multiple usernames separated by commas (e.g. <code>zuck, leomessi, natgeo</code>) to download them in parallel!
+              </li>
+              <li>
+                <strong>Interactive Terminal:</strong> Open the bottom console to use fast terminal commands like <code>ig zuck 20</code> or <code>batch @user1 @user2</code>.
+              </li>
+              <li>
+                <strong>Dual-Engine Resiliency:</strong> Automatic fallback to <code>yt-dlp</code> ensures downloads succeed even with Instagram rate limits.
+              </li>
+            </ul>
+          </div>
+
+        </div>
+      </section>
+
+
+      <!-- ==================== TIKTOK TAB ==================== -->
+      <section class="tab-panel" id="panel-tiktok">
+        <div class="panel-layout">
+          
+          <!-- Input Card -->
+          <div class="glass-card main-form-card">
+            <div class="card-header">
+              <div class="card-title">
+                <i data-lucide="video" class="platform-icon tt-gradient"></i>
+                <div>
+                  <h2>Download TikTok Creators</h2>
+                  <p>Download HD videos without watermark, photo slideshows, and audio tracks.</p>
+                </div>
+              </div>
+              <div class="session-tag">
+                <i data-lucide="check-circle-2"></i>
+                <span>HD Watermark-Free</span>
+              </div>
+            </div>
+
+            <!-- Quick Presets -->
+            <div class="preset-bar">
+              <span class="preset-label"><i data-lucide="zap"></i> Presets:</span>
+              <button type="button" class="btn btn-preset" data-preset="tt-top30">Top 30 Videos</button>
+              <button type="button" class="btn btn-preset" data-preset="tt-audio">Audio / MP3 Only</button>
+              <button type="button" class="btn btn-preset" data-preset="tt-full">Full Creator Archive</button>
+            </div>
+
+            <form id="form-tiktok" class="download-form">
+              <!-- Username input row -->
+              <div class="form-group input-with-action">
+                <label for="tt-username">TikTok Username(s) or Profile URL(s)</label>
+                <div class="input-wrapper">
+                  <span class="input-prefix">@</span>
+                  <input type="text" id="tt-username" placeholder="e.g. khaby.lame, tiktok, mrbeast (single or comma-separated)" autocomplete="off" required />
+                  <button type="button" class="btn btn-ghost" id="btn-inspect-tt" title="Inspect & Preview profile">
+                    <i data-lucide="search"></i>
+                    <span>Inspect</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- TikTok Preview Card -->
+              <div class="profile-preview-card hidden" id="tt-profile-preview">
+                <img src="" alt="Avatar" class="profile-avatar hidden" id="tt-preview-avatar" referrerpolicy="no-referrer" />
+                <div class="profile-details">
+                  <div class="profile-name-row">
+                    <h3 id="tt-preview-name">Creator</h3>
+                    <span class="badge badge-tt"><i data-lucide="music-2"></i> TikTok Creator</span>
+                  </div>
+                  <p class="profile-bio" id="tt-preview-bio">Creator description...</p>
+                </div>
+              </div>
+
+              <!-- Media Targets Checkboxes -->
+              <div class="form-section">
+                <label class="section-label">Media to Download</label>
+                <div class="checkbox-grid">
+                  <label class="custom-checkbox">
+                    <input type="checkbox" id="tt-target-videos" checked />
+                    <span class="checkbox-box"><i data-lucide="check"></i></span>
+                    <span class="checkbox-content">
+                      <strong>Videos (No Watermark)</strong>
+                      <small>Original high-definition MP4 videos</small>
+                    </span>
+                  </label>
+                  <label class="custom-checkbox">
+                    <input type="checkbox" id="tt-target-slideshows" checked />
+                    <span class="checkbox-box"><i data-lucide="check"></i></span>
+                    <span class="checkbox-content">
+                      <strong>Photo Slideshows</strong>
+                      <small>High resolution multi-image carousels</small>
+                    </span>
+                  </label>
+                  <label class="custom-checkbox">
+                    <input type="checkbox" id="tt-target-audio" />
+                    <span class="checkbox-box"><i data-lucide="check"></i></span>
+                    <span class="checkbox-content">
+                      <strong>Audio Soundtracks</strong>
+                      <small>Extract background music/sound as MP3</small>
+                    </span>
+                  </label>
+                  <label class="custom-checkbox">
+                    <input type="checkbox" id="tt-target-metadata" checked />
+                    <span class="checkbox-box"><i data-lucide="check"></i></span>
+                    <span class="checkbox-content">
+                      <strong>Metadata & Descriptions</strong>
+                      <small>Saves video captions, tags, and stats</small>
+                    </span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Filters & Scope -->
+              <div class="form-section">
+                <label class="section-label">Filters & Limits</label>
+                <div class="form-grid-2">
+                  <div class="form-group">
+                    <label for="tt-limit">Download Limit per Creator</label>
+                    <select id="tt-limit" class="custom-select">
+                      <option value="15">Latest 15 Videos</option>
+                      <option value="30" selected>Latest 30 Videos</option>
+                      <option value="60">Latest 60 Videos</option>
+                      <option value="100">Latest 100 Videos</option>
+                      <option value="all">Unlimited (All Videos)</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="tt-custom-folder">Folder Name (Optional)</label>
+                    <input type="text" id="tt-custom-folder" placeholder="Default: username" class="custom-input" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Submit Button -->
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary btn-tt-gradient btn-large" id="btn-start-tt">
+                  <i data-lucide="download-cloud"></i>
+                  <span>Start TikTok Download</span>
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Quick Tip Card -->
+          <div class="glass-card side-info-card">
+            <h3><i data-lucide="music"></i> TikTok Features</h3>
+            <ul class="info-list">
+              <li>
+                <strong>Multi-Creator Downloading:</strong> Enter multiple accounts separated by commas to queue simultaneous downloads.
+              </li>
+              <li>
+                <strong>Clean Quality:</strong> Downloads direct streams without TikTok overlay watermarks.
+              </li>
+              <li>
+                <strong>Fast Parallel Engine:</strong> Uses concurrent background worker threads.
+              </li>
+            </ul>
+          </div>
+
+        </div>
+      </section>
+
+
+      <!-- ==================== BATCH HUB TAB ==================== -->
+      <section class="tab-panel" id="panel-batch">
+        <div class="panel-layout">
+          
+          <div class="glass-card main-form-card">
+            <div class="card-header">
+              <div class="card-title">
+                <i data-lucide="layers" class="platform-icon" style="background: linear-gradient(135deg, #6366f1, #a855f7); color: #fff;"></i>
+                <div>
+                  <h2>Batch & Multi-Profile Hub</h2>
+                  <p>Download multiple Instagram profiles, TikTok creators & direct media links simultaneously.</p>
+                </div>
+              </div>
+              <div class="session-tag">
+                <i data-lucide="cpu"></i>
+                <span>Smart Auto-Detector</span>
+              </div>
+            </div>
+
+            <!-- Quick Batch Presets -->
+            <div class="preset-bar">
+              <span class="preset-label"><i data-lucide="sparkles"></i> Quick Samples:</span>
+              <button type="button" class="btn btn-preset" id="btn-sample-batch-ig">Top Tech IG Accounts</button>
+              <button type="button" class="btn btn-preset" id="btn-sample-batch-tt">Top TikTok Creators</button>
+              <button type="button" class="btn btn-preset" id="btn-sample-batch-mix">Mixed IG + TikTok Bundle</button>
+            </div>
+
+            <form id="form-batch" class="download-form">
+              <div class="form-group">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                  <label for="batch-targets-input">Target Profiles & URLs (one per line or comma-separated)</label>
+                  <button type="button" class="btn btn-ghost btn-sm" id="btn-import-targets-file" title="Load targets from .txt file">
+                    <i data-lucide="file-up"></i>
+                    <span>Import .txt List</span>
+                  </button>
+                  <input type="file" id="batch-file-input" accept=".txt" class="hidden" />
+                </div>
+                <textarea id="batch-targets-input" rows="7" placeholder="Paste multiple targets, e.g.:&#10;@zuck&#10;https://www.instagram.com/leomessi/&#10;tiktok.com/@khaby.lame&#10;ig:natgeo&#10;tt:mrbeast" class="custom-textarea" required></textarea>
+              </div>
+
+              <div class="form-section">
+                <label class="section-label">Batch Options & Concurrency</label>
+                <div class="form-grid-3">
+                  <div class="form-group">
+                    <label for="batch-limit">Download Limit per Profile</label>
+                    <select id="batch-limit" class="custom-select">
+                      <option value="20">Latest 20 Items</option>
+                      <option value="50" selected>Latest 50 Items</option>
+                      <option value="100">Latest 100 Items</option>
+                      <option value="all">Unlimited</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="batch-default-platform">Default Platform (for raw handles)</label>
+                    <select id="batch-default-platform" class="custom-select">
+                      <option value="instagram" selected>Instagram</option>
+                      <option value="tiktok">TikTok</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="batch-concurrency">Concurrent Worker Threads</label>
+                    <select id="batch-concurrency" class="custom-select">
+                      <option value="2">2 Profiles in Parallel</option>
+                      <option value="3" selected>3 Profiles in Parallel (Recommended)</option>
+                      <option value="4">4 Profiles in Parallel</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="checkbox-row" style="margin-top: 14px;">
+                  <label class="switch-control">
+                    <input type="checkbox" id="batch-save-captions" checked />
+                    <span class="switch-slider"></span>
+                    <span class="switch-label">Save Captions (.txt)</span>
+                  </label>
+                  <label class="switch-control">
+                    <input type="checkbox" id="batch-save-meta" checked />
+                    <span class="switch-slider"></span>
+                    <span class="switch-label">Save Metadata (.json)</span>
+                  </label>
+                  <label class="switch-control">
+                    <input type="checkbox" id="batch-download-reels" checked />
+                    <span class="switch-slider"></span>
+                    <span class="switch-label">Include Reels / Videos</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary btn-large" style="background: linear-gradient(135deg, #6366f1, #a855f7);">
+                  <i data-lucide="play-circle"></i>
+                  <span>Launch Batch Download</span>
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <div class="glass-card side-info-card">
+            <h3><i data-lucide="layers"></i> Smart Format Rules</h3>
+            <ul class="info-list">
+              <li>
+                <strong>Plain Handles:</strong> <code>@username</code> or <code>username</code> defaults to the selected platform.
+              </li>
+              <li>
+                <strong>Prefixed Handles:</strong> Use <code>ig:username</code> or <code>tt:username</code> to specify platform explicitly.
+              </li>
+              <li>
+                <strong>Full URLs:</strong> Full links (e.g. <code>instagram.com/...</code> or <code>tiktok.com/@...</code>) are auto-detected instantly.
+              </li>
+              <li>
+                <strong>Direct Post Links:</strong> Direct video and photo URLs are also supported in batch mode.
+              </li>
+            </ul>
+          </div>
+
+        </div>
+      </section>
+
+
+      <!-- ==================== DIRECT URL TAB ==================== -->
+      <section class="tab-panel" id="panel-direct">
+        <div class="panel-layout">
+          <div class="glass-card main-form-card">
+            <div class="card-header">
+              <div class="card-title">
+                <i data-lucide="link-2" class="platform-icon"></i>
+                <div>
+                  <h2>Direct URL Batch Downloader</h2>
+                  <p>Paste specific Instagram post/reel links or TikTok video links for instant download.</p>
+                </div>
+              </div>
+            </div>
+
+            <form id="form-direct" class="download-form">
+              <div class="form-group">
+                <label for="direct-urls">Paste URLs (one per line)</label>
+                <textarea id="direct-urls" rows="6" placeholder="https://www.instagram.com/p/C...&#10;https://www.instagram.com/reel/D...&#10;https://www.tiktok.com/@user/video/123..." class="custom-textarea" required></textarea>
+              </div>
+
+              <div class="checkbox-row">
+                <label class="switch-control">
+                  <input type="checkbox" id="direct-save-meta" checked />
+                  <span class="switch-slider"></span>
+                  <span class="switch-label">Save Caption and Metadata JSON</span>
+                </label>
+              </div>
+
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary btn-large" id="btn-start-direct">
+                  <i data-lucide="download"></i>
+                  <span>Download Direct Links</span>
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <div class="glass-card side-info-card">
+            <h3><i data-lucide="info"></i> Supported Links</h3>
+            <ul class="info-list">
+              <li><code>instagram.com/p/&lt;code&gt;</code> (Photos & Carousels)</li>
+              <li><code>instagram.com/reel/&lt;code&gt;</code> (Reels & Videos)</li>
+              <li><code>tiktok.com/@user/video/&lt;id&gt;</code> (TikTok Videos)</li>
+              <li><code>tiktok.com/@user/photo/&lt;id&gt;</code> (TikTok Slideshows)</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- ==================== GALLERY TAB ==================== -->
+      <section class="tab-panel" id="panel-gallery">
+        <div class="gallery-container">
+          
+          <!-- Gallery Sidebar / User List -->
+          <div class="glass-card gallery-sidebar">
+            <div class="sidebar-header">
+              <h3>Downloaded Profiles</h3>
+              <button class="btn btn-ghost btn-sm" id="btn-refresh-gallery" title="Refresh list">
+                <i data-lucide="refresh-cw"></i>
+              </button>
+            </div>
+            
+            <div class="sidebar-search-box">
+              <input type="text" id="gallery-user-search" placeholder="Search downloaded users..." class="custom-input custom-input-sm" />
+            </div>
+
+            <div class="user-list" id="gallery-user-list">
+              <div class="empty-state-mini">Loading profiles...</div>
+            </div>
+          </div>
+
+          <!-- Main Media Viewer -->
+          <div class="glass-card gallery-main">
+            <!-- Top Header Controls -->
+            <div class="gallery-header" id="gallery-header-area">
+              <div class="gallery-user-title">
+                <img src="" alt="" class="gallery-user-avatar hidden" id="gallery-user-avatar" />
+                <div>
+                  <h2 id="gallery-active-username">Select a downloaded user</h2>
+                  <p id="gallery-active-meta">Choose a profile from the left sidebar to view media</p>
+                </div>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="gallery-actions hidden" id="gallery-actions-bar">
+                <button class="btn btn-secondary btn-sm" id="btn-toggle-batch-mode" title="Toggle Batch Selection Mode">
+                  <i data-lucide="check-square"></i>
+                  <span>Select Items</span>
+                </button>
+                <button class="btn btn-secondary btn-sm" id="btn-gallery-finder" title="Open user folder in Finder">
+                  <i data-lucide="folder"></i>
+                  <span>Finder</span>
+                </button>
+                <button class="btn btn-primary btn-sm" id="btn-gallery-zip" title="Download entire folder as ZIP">
+                  <i data-lucide="archive"></i>
+                  <span>Export All ZIP</span>
+                </button>
+                <button class="btn btn-danger btn-sm" id="btn-gallery-delete" title="Delete profile folder">
+                  <i data-lucide="trash-2"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Toolbar (Filter pills + Search + Sort) -->
+            <div class="gallery-toolbar hidden" id="gallery-toolbar">
+              <div class="filter-group">
+                <button class="btn btn-filter active" data-filter="all">All</button>
+                <button class="btn btn-filter" data-filter="image">Photos</button>
+                <button class="btn btn-filter" data-filter="video">Videos</button>
+                <button class="btn btn-filter" data-filter="audio">Audio</button>
+              </div>
+
+              <div class="toolbar-search-box">
+                <i data-lucide="search" class="search-icon"></i>
+                <input type="text" id="gallery-media-search" placeholder="Search captions or filenames..." class="custom-input custom-input-sm" />
+              </div>
+
+              <div class="toolbar-sort-box">
+                <label for="gallery-sort-select">Sort:</label>
+                <select id="gallery-sort-select" class="custom-select custom-select-sm">
+                  <option value="date-desc" selected>Newest First</option>
+                  <option value="date-asc">Oldest First</option>
+                  <option value="size-desc">Largest Size</option>
+                  <option value="size-asc">Smallest Size</option>
+                  <option value="name-asc">Name A-Z</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Batch Action Float Bar (Visible when batch mode is active) -->
+            <div class="batch-action-bar hidden" id="batch-action-bar">
+              <div class="batch-count-info">
+                <span id="batch-selected-count">0</span> items selected
+              </div>
+              <div class="batch-buttons">
+                <button class="btn btn-ghost btn-sm" id="btn-batch-select-all">Select All</button>
+                <button class="btn btn-ghost btn-sm" id="btn-batch-deselect">Deselect All</button>
+                <button class="btn btn-primary btn-sm" id="btn-batch-zip">
+                  <i data-lucide="archive"></i>
+                  <span>Export Selected ZIP</span>
+                </button>
+                <button class="btn btn-danger btn-sm" id="btn-batch-delete">
+                  <i data-lucide="trash-2"></i>
+                  <span>Delete Selected</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Media Grid -->
+            <div class="media-grid" id="gallery-media-grid">
+              <div class="empty-gallery">
+                <i data-lucide="image" class="empty-icon"></i>
+                <h3>No media selected</h3>
+                <p>Downloaded photos and videos will appear here.</p>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+
+      <!-- ==================== SESSION & COOKIES TAB ==================== -->
+      <section class="tab-panel" id="panel-session">
+        <div class="panel-layout">
+          
+          <div class="glass-card main-form-card">
+            <div class="card-header">
+              <div class="card-title">
+                <i data-lucide="key-round" class="platform-icon"></i>
+                <div>
+                  <h2>Session & Cookie Manager</h2>
+                  <p>Connect your Instagram session to download Stories, Highlights & Private profiles you follow.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Current Session Status Card -->
+            <div class="session-info-card" id="session-active-card">
+              <div class="session-status-row">
+                <div class="status-indicator-badge" id="session-badge">
+                  <span class="indicator-dot"></span>
+                  <strong id="session-badge-text">Checking Session...</strong>
+                </div>
+                <div class="session-actions-top">
+                  <button class="btn btn-secondary btn-sm" id="btn-verify-session" title="Verify session validity">
+                    <i data-lucide="refresh-cw"></i>
+                    <span>Test Connection</span>
+                  </button>
+                  <button class="btn btn-danger btn-sm hidden" id="btn-clear-session">
+                    <i data-lucide="log-out"></i>
+                    <span>Disconnect Session</span>
+                  </button>
+                </div>
+              </div>
+              <p class="session-desc" id="session-desc-text">No active session loaded.</p>
+            </div>
+
+            <!-- Method 1: Upload Cookie File (Drag & Drop or File Chooser) -->
+            <div class="form-section">
+              <label class="section-label"><i data-lucide="upload-cloud"></i> Method 1: Upload Cookie File (.txt or .json)</label>
+              <p class="section-subtitle">Supports Netscape <code>cookies.txt</code> (from extensions like "Get cookies.txt LOCALLY") or JSON cookie files.</p>
+              
+              <div class="cookie-dropzone" id="cookie-upload-dropzone">
+                <i data-lucide="file-text" class="dropzone-icon"></i>
+                <h4>Drag & Drop your cookie file here</h4>
+                <p>or click to select file from your Mac (<code>.txt</code> or <code>.json</code>)</p>
+                <input type="file" id="cookie-file-input" accept=".txt,.json" class="hidden" />
+                <div class="dropzone-platform-selector">
+                  <label><input type="radio" name="cookie-upload-platform" value="instagram" checked /> Instagram</label>
+                  <label><input type="radio" name="cookie-upload-platform" value="tiktok" /> TikTok</label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Method 2: Auto-Scan Installed Browsers -->
+            <div class="form-section">
+              <label class="section-label"><i data-lucide="scan"></i> Method 2: Auto-Extract from Installed Browser</label>
+              <p class="section-subtitle">Automatically reads the Instagram session cookie from your browser on this Mac.</p>
+              
+              <div class="browser-buttons-grid">
+                <button type="button" class="btn btn-browser" data-browser="chrome">
+                  <i data-lucide="chrome"></i>
+                  <span>Google Chrome</span>
+                </button>
+                <button type="button" class="btn btn-browser" data-browser="brave">
+                  <i data-lucide="shield"></i>
+                  <span>Brave Browser</span>
+                </button>
+                <button type="button" class="btn btn-browser" data-browser="safari">
+                  <i data-lucide="compass"></i>
+                  <span>Apple Safari</span>
+                </button>
+                <button type="button" class="btn btn-browser" data-browser="firefox">
+                  <i data-lucide="flame"></i>
+                  <span>Mozilla Firefox</span>
+                </button>
+                <button type="button" class="btn btn-browser" data-browser="edge">
+                  <i data-lucide="globe"></i>
+                  <span>Microsoft Edge</span>
+                </button>
+                <button type="button" class="btn btn-browser" data-browser="arc">
+                  <i data-lucide="sparkles"></i>
+                  <span>Arc Browser</span>
+                </button>
+                <button type="button" class="btn btn-browser" data-browser="opera">
+                  <i data-lucide="circle"></i>
+                  <span>Opera / GX</span>
+                </button>
+                <button type="button" class="btn btn-browser" data-browser="vivaldi">
+                  <i data-lucide="layout"></i>
+                  <span>Vivaldi</span>
+                </button>
+                <button type="button" class="btn btn-browser btn-browser-all" id="btn-scan-all-browsers">
+                  <i data-lucide="search"></i>
+                  <span>Auto-Scan All Browsers</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Method 3: One-Click Browser Cookie Snippet -->
+            <div class="form-section">
+              <label class="section-label"><i data-lucide="zap"></i> Method 3: Copy Cookie from Safari / Chrome Console</label>
+              <p class="section-subtitle">Takes 5 seconds and works reliably in Safari and Chrome:</p>
+              <div class="bookmarklet-box">
+                <ol class="step-list">
+                  <li>Open <a href="https://www.instagram.com" target="_blank" class="link-highlight">instagram.com</a> in Safari and ensure you are logged in.</li>
+                  <li>Press <kbd>Cmd</kbd> + <kbd>Option</kbd> + <kbd>C</kbd> to open the Console, type this command and press <kbd>Enter</kbd>:</li>
+                </ol>
+                <div class="code-copy-box">
+                  <code>copy(document.cookie)</code>
+                  <button type="button" class="btn btn-ghost btn-sm" id="btn-copy-js-snippet">
+                    <i data-lucide="copy"></i>
+                    <span>Copy Command</span>
+                  </button>
+                </div>
+                <p class="step-followup">3. <code>copy()</code> will instantly copy your Instagram cookies to your macOS clipboard. Paste them in the box below and click <strong>Save Session</strong>.</p>
+              </div>
+            </div>
+
+            <!-- Method 4: Direct Cookie / Session ID Paste -->
+            <div class="form-section">
+              <label class="section-label"><i data-lucide="clipboard-paste"></i> Method 4: Paste Cookies or Session ID</label>
+              
+              <div class="form-group">
+                <label for="raw-cookie-input">Cookie Header, Netscape String, or Session ID</label>
+                <textarea id="raw-cookie-input" rows="3" placeholder="Paste document.cookie or 'sessionid=...; ds_user_id=...' here" class="custom-textarea"></textarea>
+              </div>
+
+              <div class="form-actions">
+                <button type="button" class="btn btn-primary" id="btn-save-cookie-text">
+                  <i data-lucide="check-circle-2"></i>
+                  <span>Save & Verify Session</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Security Note -->
+          <div class="glass-card side-info-card">
+            <h3><i data-lucide="shield"></i> Privacy & Safety</h3>
+            <ul class="info-list">
+              <li>
+                <strong>100% Local Storage:</strong> Your cookies are stored only on your local machine in the <code>data/sessions/</code> folder.
+              </li>
+              <li>
+                <strong>Password-Free:</strong> We recommend using session cookies rather than typing raw passwords for maximum security.
+              </li>
+              <li>
+                <strong>Safe Rate-Limiting:</strong> The downloader includes built-in pauses between requests to protect your account from rate limits.
+              </li>
+            </ul>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+
+
+    <!-- ==================== LIVE DOWNLOAD DRAWER & INTERACTIVE TERMINAL ==================== -->
+    <div class="progress-drawer glass-card" id="progress-drawer">
+      <div class="drawer-header" id="drawer-toggle-header">
+        <div class="drawer-status-summary">
+          <div class="pulse-indicator" id="drawer-pulse"></div>
+          <div>
+            <h4 id="drawer-title">MediaVault Console</h4>
+            <p id="drawer-subtitle">Interactive Terminal & Live Downloader</p>
+          </div>
+        </div>
+        <div class="drawer-controls">
+          <button class="btn btn-danger btn-sm" id="btn-cancel-all-jobs" title="Cancel all running downloads" style="display:none;">
+            <i data-lucide="stop-circle"></i>
+            <span>Cancel All</span>
+          </button>
+          <button class="btn btn-ghost btn-sm" id="btn-cancel-job" title="Cancel active download" style="display:none;">
+            <i data-lucide="x-circle"></i>
+            <span>Cancel</span>
+          </button>
+          <button class="btn btn-ghost btn-sm" id="btn-clear-logs" title="Clear log output">
+            <i data-lucide="trash"></i>
+            <span>Clear</span>
+          </button>
+          <button class="btn btn-icon btn-sm" id="btn-minimize-drawer" title="Expand/Collapse Console">
+            <i data-lucide="chevron-up" id="drawer-chevron-icon"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Drawer Body -->
+      <div class="drawer-body" id="drawer-body">
+        
+        <!-- Multi-Job Tasks Strip (Visible when jobs are active) -->
+        <div class="jobs-strip-container" id="jobs-strip-container" style="display:none;">
+          <div class="jobs-strip-header">
+            <span>Active Download Queue</span>
+            <span class="badge" id="jobs-strip-count">0 running</span>
+          </div>
+          <div class="jobs-strip-list" id="jobs-strip-list"></div>
+        </div>
+
+        <!-- Overall Progress Section -->
+        <div class="progress-section" id="drawer-progress-section">
+          <div class="progress-info-row">
+            <span class="progress-filename" id="progress-current-filename">Ready for commands or downloads</span>
+            <span class="progress-stats" id="progress-stats-text">0 / 0 (0%)</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="progress-bar-fill" style="width: 0%;"></div>
+          </div>
+        </div>
+
+        <!-- Interactive Terminal Window -->
+        <div class="terminal-window" id="terminal-window">
+          <div class="terminal-header">
+            <div class="terminal-header-left">
+              <span class="terminal-dot red"></span>
+              <span class="terminal-dot yellow"></span>
+              <span class="terminal-dot green"></span>
+              <span class="terminal-title">MediaVault Interactive Shell • Type 'help' for commands</span>
+            </div>
+            <div class="terminal-header-right">
+              <span class="terminal-hint">Press [Enter] to run command</span>
+            </div>
+          </div>
+
+          <!-- Terminal Quick Action Shortcuts -->
+          <div class="terminal-shortcuts-bar">
+            <span class="terminal-shortcuts-label">Quick Actions:</span>
+            <button type="button" class="term-quick-btn" data-cmd="proxy fetch">⚡ Auto-Fetch Free Proxies</button>
+            <button type="button" class="term-quick-btn" data-cmd="proxy list">🌐 Proxy Status</button>
+            <button type="button" class="term-quick-btn" data-cmd="proxy rotate">🔄 Rotate Proxy</button>
+            <button type="button" class="term-quick-btn" data-cmd="jobs">📋 Jobs</button>
+            <button type="button" class="term-quick-btn" data-cmd="storage">💾 Storage</button>
+            <button type="button" class="term-quick-btn" data-cmd="help">❓ Help</button>
+          </div>
+
+          <!-- Log Output Area -->
+          <div class="terminal-logs" id="terminal-logs-container">
+            <div class="log-line log-info">
+              <span class="log-time">[System]</span>
+              <span class="log-msg">MediaVault Terminal v2.0 ready. Type 'help' to view available commands.</span>
+            </div>
+          </div>
+
+          <!-- Interactive CLI Input Bar -->
+          <form class="terminal-cli-bar" id="terminal-cli-form">
+            <span class="terminal-prompt">mediavault &gt;</span>
+            <input type="text" id="terminal-cmd-input" placeholder="Type a command (e.g. ig zuck, tt khaby.lame, batch @a @b, storage, list, jobs)..." autocomplete="off" spellcheck="false" />
+            <button type="submit" class="btn btn-ghost btn-sm" id="btn-terminal-send" title="Run Command">
+              <i data-lucide="corner-down-left"></i>
+            </button>
+          </form>
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- ==================== LIGHTBOX / VIDEO PLAYER MODAL ==================== -->
+    <div class="modal-backdrop hidden" id="media-modal">
+      <div class="modal-content glass-card">
+        <button class="btn btn-icon modal-close-btn" id="btn-close-modal" title="Close (Esc)">
+          <i data-lucide="x"></i>
+        </button>
+
+        <!-- Navigation Arrows -->
+        <button class="lightbox-nav-btn prev" id="btn-lightbox-prev" title="Previous item (Left Arrow)">
+          <i data-lucide="chevron-left"></i>
+        </button>
+        <button class="lightbox-nav-btn next" id="btn-lightbox-next" title="Next item (Right Arrow)">
+          <i data-lucide="chevron-right"></i>
+        </button>
+
+        <div class="modal-body">
+          <div class="media-display-area" id="modal-media-display">
+            <!-- Dynamic Image or Video will be rendered here -->
+          </div>
+          
+          <div class="modal-info-sidebar">
+            <div class="modal-index-row">
+              <span class="modal-index-badge" id="modal-index-counter">1 of 1</span>
+            </div>
+            
+            <h3 id="modal-filename">filename.jpg</h3>
+            <div class="modal-meta-row">
+              <span class="modal-badge" id="modal-filesize">0 KB</span>
+              <span class="modal-badge" id="modal-filedate">Date</span>
+            </div>
+
+            <!-- Video playback speed control if video -->
+            <div class="modal-video-controls hidden" id="modal-video-controls-row">
+              <label for="modal-playback-speed">Speed:</label>
+              <select id="modal-playback-speed" class="custom-select custom-select-sm">
+                <option value="0.5">0.5x</option>
+                <option value="1" selected>1.0x (Normal)</option>
+                <option value="1.25">1.25x</option>
+                <option value="1.5">1.5x</option>
+                <option value="2">2.0x</option>
+              </select>
+            </div>
+
+            <div class="modal-caption-box hidden" id="modal-caption-container">
+              <h4>Caption</h4>
+              <p id="modal-caption-text"></p>
+            </div>
+            
+            <div class="modal-actions">
+              <a href="#" download id="modal-download-link" class="btn btn-primary btn-sm">
+                <i data-lucide="download"></i>
+                <span>Download File</span>
+              </a>
+              <button class="btn btn-secondary btn-sm" id="modal-copy-path-btn" title="Copy local file path">
+                <i data-lucide="copy"></i>
+                <span>Copy Path</span>
+              </button>
+              <button class="btn btn-secondary btn-sm" id="modal-finder-btn">
+                <i data-lucide="folder"></i>
+                <span>Show in Finder</span>
+              </button>
+              <button class="btn btn-danger btn-sm" id="modal-delete-btn">
+                <i data-lucide="trash-2"></i>
+                <span>Delete File</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- App Script -->
+  <script src="/static/js/app.js"></script>
+  <script>
+    // Initialize Lucide Icons
+    lucide.createIcons();
+  </script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Python Virtual Environments
+venv/
+.venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Environment Variables & Secrets
+.env
+.env.local
+.env.*.local
+
+# Sensitive Session Cookies & Auth Files (Private user data)
+data/sessions/*
+!data/sessions/.gitkeep
+
+# Generated ZIP Exports & Archives
+data/zips/*
+!data/zips/.gitkeep
+
+# Custom / Private Proxy Configuration
+data/proxies.json
+
+# Downloaded Media Archives & Files (Photos, Videos, Captions, Metadata)
+downloads/*
+!downloads/.gitkeep
+!downloads/instagram/
+downloads/instagram/*
+!downloads/instagram/.gitkeep
+!downloads/tiktok/
+downloads/tiktok/*
+!downloads/tiktok/.gitkeep
+
+# Operating System Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE & Editor Configurations
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Logs & Diagnostics
+*.log
+logs/
+.system_generated/
+.gemini/
