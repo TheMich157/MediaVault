@@ -1,6 +1,10 @@
 # Base image with Python 3.11 Slim
 FROM python:3.11-slim
 
+LABEL org.opencontainers.image.source="https://github.com/TheMich157/MediaVault"
+LABEL org.opencontainers.image.description="High-Performance Instagram & TikTok Media Archiver, Batch Downloader & Web Studio"
+LABEL org.opencontainers.image.licenses="MIT"
+
 # Install system dependencies (FFmpeg for video/audio processing)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ffmpeg \

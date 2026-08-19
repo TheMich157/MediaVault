@@ -81,17 +81,22 @@ curl -fsSL https://raw.githubusercontent.com/TheMich157/MediaVault/main/install.
 
 ---
 
-### 🐳 Option 2: Run with Docker / Docker Compose
+### 🐳 Option 2: Run with Docker / GitHub Packages (Zero-Setup)
 
-If you have Docker installed, you can launch MediaVault with zero local setup:
+You can run the official GitHub Package container image directly with a single command:
 
 ```bash
-# Clone and launch via Docker Compose
+docker run -d -p 3000:3000 -v $(pwd)/downloads:/app/downloads -v $(pwd)/data:/app/data --name mediavault ghcr.io/themich157/mediavault:latest
+```
+
+Or via Docker Compose:
+
+```bash
 git clone https://github.com/TheMich157/MediaVault.git
 cd MediaVault
 docker compose up -d
 ```
-Open **`http://localhost:3000`** in your browser. All downloaded media is automatically saved to `./downloads` on your host machine.
+Open **`http://localhost:3000`** in your browser. All downloaded media and sessions are automatically saved to your host machine.
 
 ---
 
