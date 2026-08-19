@@ -67,27 +67,58 @@ Whether you want to download an entire Instagram profile with carousels, reels, 
 
 ---
 
-## 🛠️ Quick Start
+## 🛠️ Quick Start & Installation
 
-### Prerequisites
-- **Python 3.10+**
-- **FFmpeg** (Recommended for video and audio processing)
-  - macOS: `brew install ffmpeg`
-  - Ubuntu/Debian: `sudo apt install ffmpeg`
-  - Windows: `winget install Gyan.FFmpeg`
+Choose whichever method is easiest for you:
 
-### 1. Clone & Setup
+### ⚡ Option 1: 1-Line Installer (Recommended for Beginners)
+
+Paste this into your terminal (macOS / Linux):
 
 ```bash
-# Clone the repository
+curl -fsSL https://raw.githubusercontent.com/TheMich157/MediaVault/main/install.sh | bash
+```
+
+---
+
+### 🐳 Option 2: Run with Docker / Docker Compose
+
+If you have Docker installed, you can launch MediaVault with zero local setup:
+
+```bash
+# Clone and launch via Docker Compose
 git clone https://github.com/TheMich157/MediaVault.git
 cd MediaVault
+docker compose up -d
+```
+Open **`http://localhost:3000`** in your browser. All downloaded media is automatically saved to `./downloads` on your host machine.
 
-# Run the automated launch script (creates virtualenv & installs requirements)
+---
+
+### 📦 Option 3: Install via PIP Package
+
+```bash
+# Install directly from GitHub
+pip install git+https://github.com/TheMich157/MediaVault.git
+
+# Launch the Web Studio
+mediavault
+
+# Or use the CLI anywhere
+mediavault-cli -p instagram -u zuck -l 20
+```
+
+---
+
+### 🖥️ Option 4: Manual Clone & macOS Double-Click
+
+```bash
+git clone https://github.com/TheMich157/MediaVault.git
+cd MediaVault
 ./run.sh
 ```
 
-> **macOS Users**: You can also simply double-click **`start.command`** in Finder!
+> **macOS Tip**: You can also simply double-click **`start.command`** in Finder!
 
 The Web Studio will launch automatically at **`http://localhost:3000`**.
 

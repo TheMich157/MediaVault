@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  mediavault:
+    build: .
+    container_name: mediavault
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      # Persist downloaded media on the host machine
+      - ./downloads:/app/downloads
+      # Persist session cookies & proxy settings on host
+      - ./data:/app/data
+    environment:
+      - HOST=0.0.0.0
+      - PORT=3000

@@ -1,0 +1,59 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mediavault-studio"
+version = "2.1.0"
+description = "High-Performance Instagram & TikTok Media Archiver, Batch Downloader & Web Studio"
+readme = "README.md"
+authors = [
+    { name = "Michal", email = "themich157@users.noreply.github.com" }
+]
+license = { text = "MIT" }
+requires-python = ">=3.10"
+keywords = ["instagram", "tiktok", "downloader", "media", "video", "reels", "stories", "archiver", "fastapi"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Web Environment",
+    "Environment :: Console",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Multimedia :: Video",
+    "Topic :: Multimedia :: Graphics",
+    "Topic :: Internet :: WWW/HTTP",
+]
+dependencies = [
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.30.0",
+    "instaloader>=4.14.0",
+    "yt-dlp>=2024.10.0",
+    "curl_cffi>=0.7.0",
+    "requests>=2.32.0",
+    "aiofiles>=24.1.0",
+    "pydantic>=2.8.0",
+    "httpx>=0.28.0",
+    "python-multipart>=0.0.9"
+]
+
+[project.urls]
+Homepage = "https://github.com/TheMich157/MediaVault"
+Repository = "https://github.com/TheMich157/MediaVault.git"
+Issues = "https://github.com/TheMich157/MediaVault/issues"
+
+[project.scripts]
+mediavault = "main:main"
+mediavault-cli = "cli:main"
+
+[tool.setuptools]
+packages = ["backend", "core"]
+py-modules = ["main", "cli"]
+
+[tool.setuptools.package-data]
+"*" = ["*.*", "frontend/**/*", "frontend/*"]
