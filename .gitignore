@@ -54,6 +54,9 @@ Thumbs.db
 *.swo
 *~
 
+# Standalone profile repository
+TheMich157/
+
 # Logs & Diagnostics
 *.log
 logs/
