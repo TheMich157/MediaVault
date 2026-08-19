@@ -32,8 +32,8 @@ jobs:
         python-version: ${{ matrix.python-version }}
         cache: 'pip'
 
-    - name: Verify FFmpeg
-      run: ffmpeg -version
+    - name: Set up FFmpeg
+      uses: FedericoCarboni/setup-ffmpeg@v3
 
     - name: Install dependencies
       run: |
