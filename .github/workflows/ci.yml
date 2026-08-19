@@ -11,6 +11,10 @@ permissions:
   contents: read
   packages: write
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     name: Run Unit Tests & Build Checks (Python ${{ matrix.python-version }})
@@ -29,7 +33,7 @@ jobs:
         cache: 'pip'
 
     - name: Verify FFmpeg
-      run: ffmpeg -version || sudo apt-get update && sudo apt-get install -y ffmpeg
+      run: ffmpeg -version
 
     - name: Install dependencies
       run: |
