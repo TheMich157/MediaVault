@@ -11,7 +11,7 @@
 
 *A studio-grade media archiver and bulk downloader for Instagram and TikTok with real-time UI, interactive terminal shell, automated proxy rotation, smart session management, and local gallery viewer.*
 
-[Features](#-key-features) • [Quick Start](#-quick-start) • [Web Studio](#-web-studio-dashboard) • [CLI Reference](#-command-line-interface-cli) • [Terminal Shell](#-interactive-terminal-console) • [Proxy Engine](#-proxy-pool--evasion-engine) • [Architecture](#-project-architecture) • [Privacy](#-privacy--security-safeguards)
+[Features](#-key-features) • [Quick Start](#-quick-start--installation) • [GitHub Package](#-using-the-official-github-package-ghcr) • [Web Studio](#-web-studio-dashboard) • [CLI Reference](#-command-line-interface-cli) • [Terminal Shell](#-interactive-terminal-console) • [Proxy Engine](#-proxy-pool--evasion-engine) • [Architecture](#-project-architecture) • [Privacy](#-privacy--security-safeguards)
 
 ---
 
@@ -126,6 +126,86 @@ cd MediaVault
 > **macOS Tip**: You can also simply double-click **`start.command`** in Finder!
 
 The Web Studio will launch automatically at **`http://localhost:3000`**.
+
+---
+
+## 📦 Using the Official GitHub Package (GHCR)
+
+MediaVault is published as a ready-to-run container on **GitHub Container Registry (GHCR)**:
+`ghcr.io/themich157/mediavault:latest`
+
+### 1. Pull the Latest Image
+```bash
+docker pull ghcr.io/themich157/mediavault:latest
+```
+
+### 2. Run the Container
+Run the container and mount your local directories so downloaded media, session cookies, and proxy settings are saved on your computer:
+
+```bash
+docker run -d \
+  --name mediavault \
+  -p 3000:3000 \
+  -v $(pwd)/downloads:/app/downloads \
+  -v $(pwd)/data:/app/data \
+  --restart unless-stopped \
+  ghcr.io/themich157/mediavault:latest
+```
+
+Open **`http://localhost:3000`** in your browser to access the Web Studio.
+
+### 3. Run CLI Commands Inside the Running Container
+You can execute CLI download commands inside the container anytime without installing Python on your host:
+
+```bash
+# Download 25 posts from an Instagram user
+docker exec -it mediavault python cli.py -p instagram -u zuck -l 25
+
+# Download TikTok creator videos without watermarks
+docker exec -it mediavault python cli.py -p tiktok -u khaby.lame -l 30
+
+# Auto-fetch and verify free rotating proxies
+docker exec -it mediavault python cli.py --proxies auto
+
+# Check storage breakdown
+docker exec -it mediavault python cli.py --list
+```
+
+### 4. Container Management Commands
+
+| Action | Command |
+| :--- | :--- |
+| **View Live Logs** | `docker logs -f mediavault` |
+| **Stop Studio** | `docker stop mediavault` |
+| **Start Studio** | `docker start mediavault` |
+| **Update to Latest Version** | `docker pull ghcr.io/themich157/mediavault:latest && docker restart mediavault` |
+| **Remove Container** | `docker rm -f mediavault` |
+
+### 5. Running with Docker Compose
+If you prefer Docker Compose, save this as `docker-compose.yml`:
+
+```yaml
+version: '3.8'
+
+services:
+  mediavault:
+    image: ghcr.io/themich157/mediavault:latest
+    container_name: mediavault
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./downloads:/app/downloads
+      - ./data:/app/data
+    environment:
+      - HOST=0.0.0.0
+      - PORT=3000
+```
+
+Start in the background with:
+```bash
+docker compose up -d
+```
 
 ---
 
